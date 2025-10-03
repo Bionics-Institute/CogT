@@ -1,0 +1,17 @@
+*.pyc
+/experiments/*
+/exe/build/*
+/exe/dist/*
+/output_pyc/*
+/errors.txt
+/interface_errors.txt
+/venv/*
+*.stackdump
+*.cfg
+*.bat
+*.ps1
+*.exe
+*.xlsx
+*.csv
+*.pdf
+*.png

@@ -8,7 +8,12 @@ import pandas as pd
 import numpy as np
 import os
 import glob
-from EarGenie_Preprocessing.nirs_read_raw import read_nirx
+
+from fnirs_preproc.src.nirs_read_raw import read_nirx
+
+from profiler import single_run_profile, save_profile
+
+
 from profiler import save_profile, runLiveSim
 import traceback
 from datetime import datetime
