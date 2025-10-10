@@ -27,10 +27,11 @@ print("You selected:", fpath)
 print("Files in that folder:", os.listdir(fpath))
 
     ###REGULAR PREPROCESSING###
-
+# 1. Optic density
 od_data = mne.preprocessing.nirs.optical_density(raw_data)
 
 original_od_data = od_data.copy()
+# 2. TDDR
 
 raw_tddr = mne.preprocessing.nirs.temporal_derivative_distribution_repair(od_data);
 #raw_tddr = od_data.copy()
@@ -40,6 +41,8 @@ lower_cutoff = 0.01; # Or the high pass cutoff
 upper_cutoff = 0.25; # Or the low pass cutoff
 
 # band pass filter the optical density
+
+#3. Band pass Filtering 
 data_filtered = raw_tddr.filter(l_freq=lower_cutoff,
                     h_freq=upper_cutoff,
                     method='iir',
@@ -48,7 +51,9 @@ data_filtered = raw_tddr.filter(l_freq=lower_cutoff,
                                       output='sos'));
 
 
-#haemodynamic conversion
+#4. HbO HbR aemodynamic conversion
+
+
 raw_haemo = mne.preprocessing.nirs.beer_lambert_law(data_filtered, ppf=0.1);
     
     ###DATA QUALITY CALCULATIONS###

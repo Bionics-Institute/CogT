@@ -22,7 +22,6 @@ import re
 
 import matplotlib.pyplot as plt
 
-from simulate_recordings_3 import simulate_exData
 
 ### DATA QUALITY SPECIFIC FUNCTIONS
 
@@ -458,6 +457,7 @@ if (__name__ == '__main__'):
     match = re.search(r'C\d{3}', fname)
     subID = match.group()
 
+    '''
     epochs_ex, od_rest, od_ex = simulate_exData(fname,target_amp) 
     
     od_data = od_ex.copy();
@@ -603,7 +603,7 @@ if (__name__ == '__main__'):
     fig.canvas.draw()
     fig.savefig(subID+'.png', format='png',bbox_inches='tight')
     
-    
+    '''
     
     
                 

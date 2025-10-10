@@ -1,7 +1,4 @@
-from interface import runEarGenie
-from EarGenie_Preprocessing.nirs_read_raw import read_nirx
 
-import EarGenie_PostProc_Online.src.detAlgParams as params
 import numpy as np
 import time
 import pandas as pd
@@ -15,6 +12,7 @@ from datetime import datetime
 import requests
 import traceback
 import json
+from runAlg import main
 
 def load_online_json(url):
     try:
@@ -104,7 +102,7 @@ def single_run_profile(raw, epoch_bounds=[-3,27], save_failed_runs=True, fb_prms
             fb_prms["finished"] = True
             return fb_prms
         
-        # Choose first trigger psr after algorithm started previously
+        # Choose first trigger psr after algorithm started previously - if running in batch change no of triggers to point to the end
         fb_prms["last_start_sampl"] = t_psrs_left[0] 
         
         max_trig_psr_sample = int(fb_prms["last_start_sampl"])
@@ -129,7 +127,9 @@ def single_run_profile(raw, epoch_bounds=[-3,27], save_failed_runs=True, fb_prms
     output_df = None
     
     try:
-    
+        
+        print(f"Try Block")
+        '''
         output_df, fb_prms["regionScoreListTemporal"], fb_prms["regionScoreListFrontal"], fb_prms["isStopObj"], restart_flag = runEarGenie(raw['data'], 
                     collected_data['sfreq'], 
                     collected_data['trigger_labels'], 
@@ -142,6 +142,20 @@ def single_run_profile(raw, epoch_bounds=[-3,27], save_failed_runs=True, fb_prms
                     fb_prms["regionScoreListTemporal"], 
                     fb_prms["regionScoreListFrontal"], 
                     fb_prms["isStopObj"])
+        
+        '''
+        connectivity_matrix =main(raw['data'], 
+                collected_data['sfreq'], 
+                collected_data['trigger_labels'], 
+                collected_data['trigger_samples'], 
+                collected_data['distances'], 
+                collected_data['wavelengths'], 
+                collected_data['ch_labels'], 
+                collected_data['roi'])
+        
+
+
+        #output_df, fb_prms["regionScoreListTemporal"], fb_prms["regionScoreListFrontal"], fb_prms["isStopObj"], restart_flag = preprocess_data(raw['data'])
     
     except:
         traceback.print_exc()

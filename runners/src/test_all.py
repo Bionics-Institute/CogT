@@ -12,7 +12,7 @@ import glob
 from fnirs_preproc.src.nirs_read_raw import read_nirx
 
 from profiler import single_run_profile, save_profile
-
+from pathlib import Path
 
 from profiler import save_profile, runLiveSim
 import traceback
@@ -20,7 +20,7 @@ from datetime import datetime
 
 import json
 import requests
-
+HERE = Path(__file__).resolve().parent
 
 def load_online_json(url):
     try:
@@ -260,7 +260,8 @@ def run_all(search_base_folder, output_folder, protocols):
 if (__name__ == '__main__'):
     
     link = ""
-    filename = "protocols_v4.json"
+
+    filename =      HERE / "protocols.json"
     download_link = link + "?download=1"
    # protocols = load_online_json(download_link) # place the protocols.json file in the base folder in a remote link. 
     protocols = load_local_json(filename) # place the protocols.json file in the base folder in     a remote link. 

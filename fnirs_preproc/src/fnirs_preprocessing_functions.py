@@ -679,5 +679,5 @@ def fnirs_preprocessing(data, sfreq, trigger_samples, trigger_labels, wavelength
     #print(f"16 b. Epochs DF: {epochs_df}")
     
 
-    return epochs_df, data_filtered
+    return epochs_df, data_hb, chromophore_labels
 

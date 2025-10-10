@@ -138,8 +138,8 @@ def read_nirx(fname, protocol = {}):
     description = [];
     
     # Read triggers from event file
-    #files['tri'] = files['hdr'][:-3] + 'evt';
-    files['tri'] = files['hdr'][:-4] + '_interspersed_disc' '.evt';
+    files['tri'] = files['hdr'][:-3] + 'evt';
+    #files['tri'] = files['hdr'][:-4] + '_interspersed_disc' '.evt';
 
     
     if op.isfile(files['tri']):
