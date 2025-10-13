@@ -593,7 +593,7 @@ def fnirs_preprocessing(data, sfreq, trigger_samples, trigger_labels, wavelength
         all trigger count (AllTokenCount), channel SCI (ChannelSCI), chromophore type (Chromophore),
         region of interest (ROI), and speech type (SpeechType).
     
-    data_filtered : 2D numpy array, shape (nChannels, nSamples)
+    data_hb : 2D numpy array, shape (nChannels, nSamples)
         The preprocess fNIRS data just before being converted with the beer-lambert law
     """
 

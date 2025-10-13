@@ -61,6 +61,41 @@ def _corrcoef_channels(x: np.ndarray) -> np.ndarray:
     xn = xm / std
     return np.corrcoef(xn)
 
+def corrcoef_vector(
+    time_series: np.ndarray,
+    tri: str = "upper",
+    return_indices: bool = True,
+):
+    """
+    Compute the channel×channel correlation matrix and return it as a 1D vector
+    of off-diagonal elements (defaults to unique 'upper' triangle, k=1).
+
+    Parameters
+    ----------
+    time_series : np.ndarray
+        Array of shape (n_channels, n_timepoints).
+    tri : {"upper", "lower"}
+        Which triangle (without diagonal) to vectorize. "upper" gives unique pairs.
+    return_indices : bool
+        If True, also return (i, j) index arrays mapping each vector element to the
+        full correlation matrix positions.
+
+    Returns
+    -------
+    vec : np.ndarray, shape (n_pairs,)
+        Vectorized correlations excluding the diagonal.
+    (i, j) : tuple of np.ndarray (optional)
+        Index arrays such that corr_mat[i, j] == vec.
+    """
+    corr_mat = _corrcoef_channels(time_series.astype(float, copy=True))
+    if tri not in {"upper", "lower"}:
+        raise ValueError("tri must be 'upper' or 'lower'.")
+    if tri == "upper":
+        i, j = np.triu_indices_from(corr_mat, k=1)
+    else:
+        i, j = np.tril_indices_from(corr_mat, k=1)
+    vec = corr_mat[i, j]
+    return (vec, (i, j)) if return_indices else vec
 
 def _threshold_top_percentage(corr: np.ndarray, pct: float, use_abs: bool = True) -> np.ndarray:
     """
@@ -151,6 +186,8 @@ def compute_fnirs_graph_metrics(
         x = _bandpass_filter(x, fs=fs, band=band)
 
     corr_mat = _corrcoef_channels(x)
+    vec, (i, j) = corrcoef_vector(time_series, tri="upper", return_indices=True)
+
 
     records = []
     for t in thresholds:
@@ -168,7 +205,7 @@ def compute_fnirs_graph_metrics(
             )
         )
     metrics_df = pd.DataFrame.from_records(records).sort_values("threshold_pct").reset_index(drop=True)
-    return metrics_df, corr_mat
+    return metrics_df, corr_mat,vec, (i,j)
 
 
 def compute_bms_against_reference(
@@ -223,10 +260,10 @@ if __name__ == "__main__":
         X[ch] = base + noise
     dlpfc_idx = [12, 13, 14, 15, 16, 17, 18]   # example indices
     ts_dlpfc = X[dlpfc_idx, :]   
-    metrics, corr = compute_fnirs_graph_metrics(ts_dlpfc, fs=fs, band=(0.01, 0.08), detrend=True, use_abs=True)
+    metrics, corr, vec, (i, j) = compute_fnirs_graph_metrics(ts_dlpfc, fs=fs, band=(0.01, 0.08), detrend=True, use_abs=True)
     # Save outputs for inspection
-    out_path_metrics = "/mnt/data/fnirs_graph_metrics_demo.csv"
-    out_path_corr = "/mnt/data/fnirs_corr_matrix_demo.npy"
+    out_path_metrics = "/experiments/fnirs_graph_metrics_demo.csv"
+    out_path_corr = "/experiments/fnirs_corr_matrix_demo.npy"
     metrics.to_csv(out_path_metrics, index=False)
     np.save(out_path_corr, corr)
     print("Saved demo metrics to:", out_path_metrics)

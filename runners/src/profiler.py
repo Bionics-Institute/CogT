@@ -144,7 +144,7 @@ def single_run_profile(raw, epoch_bounds=[-3,27], save_failed_runs=True, fb_prms
                     fb_prms["isStopObj"])
         
         '''
-        connectivity_matrix =main(raw['data'], 
+        metrics, vec, (i,j)  =main(raw['data'], 
                 collected_data['sfreq'], 
                 collected_data['trigger_labels'], 
                 collected_data['trigger_samples'], 
