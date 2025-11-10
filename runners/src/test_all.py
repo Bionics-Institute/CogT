@@ -116,7 +116,7 @@ def search_for_not_run(search_base_folder, output_folder):
             split_inner = inner_folder.split('.')
             if (len(split_inner) > 1):
                 # IF contains more than 1 segment, then assume protocol embedded in recording label
-                prot = inner_folder.split('.')[0]
+                prot = inner_folder.split('.')[1]
             else:
                 # Take from outer folder name (LEGACY => should not be used)
                 print(f"======== Used legacy protocol extraction for recording {inner_folder} =========")
@@ -218,11 +218,9 @@ def run_all(search_base_folder, output_folder, protocols):
             sides = ['L', 'R']
     
             side_dfs = []
-            for side in sides:
-    
-                perf_df = runLiveSim(raw, side, save_failed_runs=False)    
-                    
-                side_dfs.append(perf_df)
+              
+            perf_df = runLiveSim(raw, save_failed_runs=False)
+            side_dfs.append(perf_df)
     
             perf_df = pd.concat(side_dfs)
             perf_df["SubjectID"] = src
@@ -270,7 +268,7 @@ if (__name__ == '__main__'):
     print(protocols)
     #output_folder = r'C:\\Users\\BalasuG\\OneDrive - The Bionics Institute of Australia\\Documents\\EarGenie\\Experiments\\Alg_V2_Integration' # empty to begin with
     #output_folder = r'C:\\Users\\BalasuG\\Downloads\\FNIRS Testing\\c184_results' # empty to begin with
-    output_folder = r'C:\\Users\\GBalasubramanian\\OneDrive - The Bionics Institute of Australia\\Documents\\EarGenie\\Experiments\\Alg_V2_Integration' # empty to begin with
+    output_folder = r'C:\\Users\\GBalasubramanian\\OneDrive - The Bionics Institute of Australia\\Documents\\FMRI_FNIRS_Work\\Experiments\\c109\\output'
 
 
     #output_folder = r"C:\\Users\\BalasuG\\Downloads\\0dB Test Results Discrim\\closerinit_fptest_adjusted_pt5_sigmaf_dynamic_merge_whitepaper\\nh\\test_early_stop"
@@ -281,7 +279,7 @@ if (__name__ == '__main__'):
     #search_base_folder = r'C:\\Users\\BalasuG\\Downloads\\FNIRS Testing\\May 2024\\NH'
     #search_base_folder = r'C:\\Users\\BalasuG\\Downloads\\FNIRS Testing\\sanity_check\\'
     #search_base_folder = r'C:\\Users\\BalasuG\\Downloads\\FNIRS Testing\\May 2024\\NH\\Detection_1\\2_C077.S008.modified.yessilence.yeshabituation'
-    search_base_folder = r'C:\\Users\\GBalasubramanian\\Downloads\\fnirs testing\\2_C077.S008.modified.yessilence.yeshabituation'
+    search_base_folder = r'C:\\Users\GBalasubramanian\\Downloads\\fnirs testing\\109\\BSL\\Resting_EC'
 
     
     #search_base_folder = r'C:\\Users\\BalasuG\\Downloads\\FNIRS Testing\\awake data\\rerun'

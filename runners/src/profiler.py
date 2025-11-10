@@ -127,35 +127,17 @@ def single_run_profile(raw, epoch_bounds=[-3,27], save_failed_runs=True, fb_prms
     output_df = None
     
     try:
-        
-        print(f"Try Block")
-        '''
-        output_df, fb_prms["regionScoreListTemporal"], fb_prms["regionScoreListFrontal"], fb_prms["isStopObj"], restart_flag = runEarGenie(raw['data'], 
-                    collected_data['sfreq'], 
-                    collected_data['trigger_labels'], 
-                    new_trigger_labels, 
-                    collected_data['trigger_samples'], 
-                    collected_data['distances'], 
-                    collected_data['wavelengths'], 
-                    collected_data['ch_labels'], 
-                    collected_data['roi'], 
-                    fb_prms["regionScoreListTemporal"], 
-                    fb_prms["regionScoreListFrontal"], 
-                    fb_prms["isStopObj"])
-        
-        '''
-        metrics, vec, (i,j)  =main(raw['data'], 
+
+        output_df  =main(raw['data'], 
                 collected_data['sfreq'], 
                 collected_data['trigger_labels'], 
                 collected_data['trigger_samples'], 
                 collected_data['distances'], 
                 collected_data['wavelengths'], 
-                collected_data['ch_labels'], 
-                collected_data['roi'])
+                collected_data['ch_labels'])
         
 
 
-        #output_df, fb_prms["regionScoreListTemporal"], fb_prms["regionScoreListFrontal"], fb_prms["isStopObj"], restart_flag = preprocess_data(raw['data'])
     
     except:
         traceback.print_exc()
@@ -175,9 +157,7 @@ def single_run_profile(raw, epoch_bounds=[-3,27], save_failed_runs=True, fb_prms
         output_df.insert(1, '@StartTime', fb_prms["last_start_sampl"] / raw['sfreq'])
         output_df.insert(2, 'RunTime', fb_prms["last_run_time"])
         
-        tok_col = output_df['Token'].copy()    # Make a copy of the column
-        output_df.drop('Token', axis=1, inplace=True)    # Delete the original column from the dataframe
-        output_df.insert(3, 'Token', tok_col)        # Insert the copied column at the desired location (index 2 in this case)
+       
     
         fb_prms["perf_df_list"].append(output_df)
     
@@ -467,30 +447,25 @@ def save_profile(perf_df, save_file_path, plot=True, raw=None, epoch_bounds=[0,1
     if (autoOpen):
         p = Popen(save_file_path, shell=True)
 
-def runLiveSim(raw_all, side_to_use, save_failed_runs = True): 
+def runLiveSim(raw_all, save_failed_runs = True): 
     
     # Check raw validity 
     if (len(raw_all['trigger_samples']) == 0):
         raise ValueError("No events/stimuli in raw file, quitting execution...")
     
-    raw = mask_side(raw_all, side_to_use=side_to_use)
+    #raw = mask_side(raw_all, side_to_use=side_to_use)
     
-    fb_prms = single_run_profile(raw,
+    fb_prms = single_run_profile(raw_all,
                                  save_failed_runs=save_failed_runs)
     while fb_prms['finished'] == False:
         
-        fb_prms = single_run_profile(raw,
+        fb_prms = single_run_profile(raw_all,
                                      save_failed_runs=save_failed_runs,
                                      fb_prms = fb_prms)
 
     # Concat outputs
     perf_df = pd.concat(fb_prms["perf_df_list"])
 
-
-    
-    perf_df['Side'] = side_to_use;
-    params.isStopObjFrontal ={}
-    params.isStopObjTemporal ={}
     
     return perf_df
 

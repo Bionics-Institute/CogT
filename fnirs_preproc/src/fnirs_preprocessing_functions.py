@@ -560,7 +560,7 @@ def return_early(data, name):
     raise Exception("Exit early")
         
 
-def fnirs_preprocessing(data, sfreq, trigger_samples, trigger_labels, wavelengths, ch_labels, distances, roi, epoch_bounds=[-3, 27]):
+def fnirs_preprocessing(data, sfreq, trigger_samples, trigger_labels, wavelengths, ch_labels, distances, epoch_bounds=[-3, 27]):
     """
     Preprocess fNIRS data and return a pandas DataFrame with additional metadata columns.
 
@@ -639,12 +639,6 @@ def fnirs_preprocessing(data, sfreq, trigger_samples, trigger_labels, wavelength
     data_hb, chromophore_labels = beer_lambert_law(data_filtered, sfreq, 0.1*10**-6, wavelengths, distances, ch_labels)
 
     #print(f"Preproc 6 hpass: {data_hb.shape}")
-
-
-
-
-
-    
     
     # 5. Epoch Data
     tmin, tmax = epoch_bounds;
@@ -657,7 +651,6 @@ def fnirs_preprocessing(data, sfreq, trigger_samples, trigger_labels, wavelength
     num_rows = epochs_df.shape[0];    
     epochs_df["ChannelSCI"] = np.resize(channel_sci, num_rows);
     epochs_df["Chromophore"] = np.resize(chromophore_labels, num_rows)
-    epochs_df["ROI"] = np.resize(roi, num_rows);
     
     
     # 6. Epoch Filtering

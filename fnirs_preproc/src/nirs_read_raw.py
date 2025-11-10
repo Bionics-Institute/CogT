@@ -178,8 +178,7 @@ def read_nirx(fname, protocol = {}):
           'trigger_labels': np.array(description), 
           'wavelengths': np.array(wavelengths), 
           'ch_labels': np.array(chnames), 
-          'distances': np.array(distances),
-          'roi': np.array(default_roi)
+          'distances': np.array(distances)
     }
     
     return raw
