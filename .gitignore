@@ -1,11 +1,6 @@
 *.pyc
-/experiments/*
-/exe/build/*
-/exe/dist/*
-/output_pyc/*
-/errors.txt
-/interface_errors.txt
-/venv/*
+*.txt
+/cogt_env/*
 *.stackdump
 *.cfg
 *.bat
@@ -15,3 +10,6 @@
 *.csv
 *.pdf
 *.png
+*.json
+__init__.py
+fnirs_preproc/___init__.py
