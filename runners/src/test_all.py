@@ -11,7 +11,7 @@ import glob
 
 from fnirs_preproc.src.nirs_read_raw import read_nirx
 
-from profiler import single_run_profile, save_profile
+from profiler import single_run_profile, save_corr_vals
 from pathlib import Path
 
 from profiler import save_profile, runLiveSim
@@ -231,7 +231,7 @@ def run_all(search_base_folder, output_folder, protocols):
             
             
             fileName_noplots = os.path.join(withoutPlotsDir, f"{save_file_name}.xlsx")
-            save_profile(perf_df, fileName_noplots, plot=False, raw=raw, autoOpen=False)
+            save_corr_vals(perf_df, fileName_noplots, plot=False, raw=raw, autoOpen=False)
             runObj['finished'] = True
             
             print(f"=================== Finished Processing {src} ========================")
@@ -268,7 +268,7 @@ if (__name__ == '__main__'):
     print(protocols)
     #output_folder = r'C:\\Users\\BalasuG\\OneDrive - The Bionics Institute of Australia\\Documents\\EarGenie\\Experiments\\Alg_V2_Integration' # empty to begin with
     #output_folder = r'C:\\Users\\BalasuG\\Downloads\\FNIRS Testing\\c184_results' # empty to begin with
-    output_folder = r'C:\\Users\\GBalasubramanian\\OneDrive - The Bionics Institute of Australia\\Documents\\FMRI_FNIRS_Work\\Experiments\\c109\\output'
+    output_folder = r'C:\\Users\\GBalasubramanian\\OneDrive - The Bionics Institute of Australia\\Documents\\FMRI_FNIRS_Work\\Experiments\\fnirsCorrelationValues\\output'
 
 
     #output_folder = r"C:\\Users\\BalasuG\\Downloads\\0dB Test Results Discrim\\closerinit_fptest_adjusted_pt5_sigmaf_dynamic_merge_whitepaper\\nh\\test_early_stop"
@@ -279,7 +279,7 @@ if (__name__ == '__main__'):
     #search_base_folder = r'C:\\Users\\BalasuG\\Downloads\\FNIRS Testing\\May 2024\\NH'
     #search_base_folder = r'C:\\Users\\BalasuG\\Downloads\\FNIRS Testing\\sanity_check\\'
     #search_base_folder = r'C:\\Users\\BalasuG\\Downloads\\FNIRS Testing\\May 2024\\NH\\Detection_1\\2_C077.S008.modified.yessilence.yeshabituation'
-    search_base_folder = r'C:\\Users\GBalasubramanian\\Downloads\\fnirs testing\\109\\BSL\\Resting_EC'
+    search_base_folder = r'C:\\Users\\GBalasubramanian\\Downloads\\cogT_fnirs'
 
     
     #search_base_folder = r'C:\\Users\\BalasuG\\Downloads\\FNIRS Testing\\awake data\\rerun'

@@ -209,6 +209,111 @@ def rgb_to_hex(r,g,b):
     return '#{:02x}{:02x}{:02x}'.format(r, g, b)
 
 
+def save_corr_vals(perf_df, save_file_path, plot=False, raw=None, epoch_bounds=[0,18], autoOpen = True, subID = None):
+    if (perf_df is None):
+        print("Nothing to output. Exiting...")
+        return
+    
+    
+    # Assign subID if present
+    if (subID is not None):
+        perf_df["SubjectID"] = subID
+        
+    # Round to 4 decimals max
+    perf_df = perf_df.round(4)
+        
+    # Pre org
+    #perf_df = perf_df.sort_values(["NoofTrials", "Token", "Side", "Region", "TestType"], ascending=[True, True, True, True, False])
+
+    
+    if (plot==True):
+        # Append the new directory to your file path
+        p_folder = os.path.dirname(save_file_path)
+        plot_dir = os.path.join(p_folder, "plots")
+        
+        # Create the new directory if it doesn't exist
+        if not os.path.exists(plot_dir):
+            os.makedirs(plot_dir)
+    
+    workbook = xlsxwriter.Workbook(save_file_path)
+    worksheet = workbook.add_worksheet()
+    
+    header_format = workbook.add_format({'bg_color': 'black', 'font_color': 'white'})
+    border_format_top = workbook.add_format({'top': 1, 'top_color': 'black'})
+    border_format_bot = workbook.add_format({'bottom': 1, 'bottom_color': 'black'})
+    red_format = workbook.add_format({'bg_color': rgb_to_hex(255,199,206), 'font_color': rgb_to_hex(156,0,6)})
+    green_format = workbook.add_format({'bg_color': rgb_to_hex(198, 239, 206), 'font_color': rgb_to_hex(0,97,0)})
+    yellow_format = workbook.add_format({'top': 1, 'top_color': 'black',
+                                         'bg_color': rgb_to_hex(255,235,156), 
+                                         'font_color': rgb_to_hex(156,101,0)})    
+    blue_format = workbook.add_format({'bottom': 1, 'bottom_color': 'black',
+                                        'bg_color': '#B7DEE8', 
+                                        'font_color': '#244062'})
+    c_hex = '#FECE00'
+    psr_hex = "#8EAFD6"
+    control_colour = workbook.add_format({'bg_color': c_hex})
+    psr_colour = workbook.add_format({'bg_color': psr_hex})
+    white_text = workbook.add_format({'font_color': rgb_to_hex(255,255,255)})
+
+    
+    # List of columns to exclude
+    #exclude_columns = ["MeanEpochsHBO", "MeanEpochsHBR", "response"]
+    out_df = perf_df
+    
+          
+    # Write column headers to the Excel file
+    for i, col in enumerate(out_df.columns):
+        worksheet.write(0, i, col, header_format)
+    
+    min_y = np.inf
+    max_y = -np.inf
+    padding = (max_y - min_y) * 0.02
+    min_y = min_y - padding
+    max_y = max_y + padding
+
+    data_row_index = 1
+    i = 0
+    while i < len(out_df):
+        curr_row = out_df.iloc[i]
+        curr_row_full = perf_df.iloc[i]
+        if i + 1 < len(out_df) and ('@StartTime' in out_df.columns) and (out_df.iloc[i]['@StartTime'] == out_df.iloc[i+1]['@StartTime']):
+            next_row = out_df.iloc[i+1]
+            next_row_full = perf_df.iloc[i+1]
+            for j in range(len(out_df.columns)):
+                column_type = out_df.columns[j]
+                f1 = None
+                f2 = None
+                if (pd.isna(curr_row['SubjectID']) or pd.isna(next_row['SubjectID'])):
+                    if (column_type == 'Run'):
+                        f1 = red_format
+                        f2 = red_format
+                else:
+                    if (column_type == 'Run'):
+                        f1 = green_format
+                        f2 = green_format
+                    elif (column_type == 'SubjectID' and curr_row[j] is not None and next_row[j] is not None):
+                        f1 = yellow_format
+                        f2 = blue_format
+                        
+                worksheet.write(data_row_index, j, get_cell_value(curr_row[j]), f1)
+                worksheet.write(data_row_index + 1, j, get_cell_value(next_row[j]), f2)
+    
+            worksheet.set_row(data_row_index, None, border_format_top)
+            worksheet.set_row(data_row_index + 1, None, border_format_bot)
+            data_row_index += 2
+            i += 2
+        else:
+            for j in range(len(out_df.columns)):
+                worksheet.write(data_row_index, j, get_cell_value(curr_row[j]), red_format if j==0 else None)
+            data_row_index += 1
+            i += 1
+
+       
+    workbook.close()
+    
+    if (autoOpen):
+        p = Popen(save_file_path, shell=True)
+
 
 def save_profile(perf_df, save_file_path, plot=True, raw=None, epoch_bounds=[0,18], autoOpen = True, subID = None):
     
@@ -225,7 +330,7 @@ def save_profile(perf_df, save_file_path, plot=True, raw=None, epoch_bounds=[0,1
     perf_df = perf_df.round(4)
         
     # Pre org
-    perf_df = perf_df.sort_values(["NoofTrials", "Token", "Side", "Region", "TestType"], ascending=[True, True, True, True, False])
+    #perf_df = perf_df.sort_values(["NoofTrials", "Token", "Side", "Region", "TestType"], ascending=[True, True, True, True, False])
     perf_df = perf_df.reset_index(drop=True)
 
     
