@@ -50,3 +50,10 @@ setx PYTHONPATH "C:\path\to\CoGT"
 Then close & reopen Visual Studio (and its terminal) before running.
 
 B. Visual Studio project-only (clean):
+
+
+==================================================Generate Correlation Values from fNIRs==================================================================================
+0.  Set input folders in the following folder: base_folder -> SubjectNo -> subfolder (eyes closed) -> NIRx files 
+1.  Change input (base_folder location) & output folders in test_all.py
+2.  Run test_all.py (output: correlation values for dlpfc region measured for each subject in input folder.)
+3.  Run concatenateFiles.py
